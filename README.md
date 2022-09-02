@@ -1,6 +1,6 @@
-# Application load balancer
+# Application Load Balancer
 
-This module creates an application load balancer
+This module creates an AWS Application Load Balancer
 
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-application-load-balancer.html
 
