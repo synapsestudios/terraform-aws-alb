@@ -3,11 +3,6 @@ variable "name" {
   description = "The name to give the load balancer. The name will have the namespace appended"
 }
 
-variable "namespace" {
-  type        = string
-  description = "Determines naming convention of assets. Generally follows DNS naming convention."
-}
-
 variable "tags" {
   type        = map(string)
   description = "A mapping of tags to assign to the AWS resources."
