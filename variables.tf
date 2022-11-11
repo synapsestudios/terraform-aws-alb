@@ -27,5 +27,5 @@ variable "vpc_id" {
 
 variable "certificate_arn" {
   type        = string
-  description = "ARN of the Certificate Manager cert to use for HTTPS connections"
+  description = "ARN of the Certificate Manager cert to use for HTTPS connections, automatically creates an HTTPS listener if set"
 }
