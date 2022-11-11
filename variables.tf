@@ -24,3 +24,8 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID to associate with ALB"
 }
+
+variable "certificate_arn" {
+  type        = string
+  description = "ARN of the Certificate Manager cert to use for HTTPS connections"
+}
