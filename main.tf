@@ -15,7 +15,7 @@ resource "aws_alb" "this" {
 }
 
 resource "aws_lb_listener" "https" {
-  count             = var.certificate_arn ? 1 : 0
+  count             = var.certificate_arn != "" ? 1 : 0
   load_balancer_arn = aws_alb.this.arn
   port              = 443
   certificate_arn   = var.certificate_arn
@@ -33,7 +33,7 @@ resource "aws_lb_listener" "https" {
 }
 
 resource "aws_lb_listener" "https_redirect" {
-  count             = var.certificate_arn ? 1 : 0
+  count             = var.certificate_arn != "" ? 1 : 0
   load_balancer_arn = aws_alb.this.arn
   port              = 80
   protocol          = "HTTP"
@@ -50,7 +50,7 @@ resource "aws_lb_listener" "https_redirect" {
 }
 
 resource "aws_lb_listener" "http" {
-  count             = var.certificate_arn ? 0 : 1
+  count             = var.certificate_arn != "" ? 0 : 1
   load_balancer_arn = aws_alb.this.arn
   port              = 80
   protocol          = "HTTP"
