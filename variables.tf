@@ -24,3 +24,9 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID to associate with ALB"
 }
+
+variable "certificate_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of the Certificate Manager cert to use for HTTPS connections, automatically creates an HTTPS listener if set"
+}
