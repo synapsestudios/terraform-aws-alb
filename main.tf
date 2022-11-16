@@ -8,10 +8,14 @@ resource "aws_alb" "this" {
 
   access_logs {
     bucket  = aws_s3_bucket.alb_access_logs.bucket
-    prefix  = "${var.name}-alb"
+    prefix  = local.log_prefix
     enabled = true
   }
 
+}
+
+locals {
+  log_prefix = "${var.name}-alb"
 }
 
 resource "aws_lb_listener" "https" {
@@ -83,10 +87,24 @@ resource "aws_s3_bucket_public_access_block" "public_block" {
   restrict_public_buckets = true
 }
 
-resource "aws_kms_key" "alb_key" {
-  description         = "${var.name}-alb-key"
-  enable_key_rotation = true
+data "aws_elb_service_account" "main" {}
+data "aws_caller_identity" "current" {}
 
+data "aws_iam_policy_document" "allow_load_balancer_write" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["${data.aws_elb_service_account.main.arn}"]
+    }
+
+    actions = [
+      "s3:PutObject"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.alb_access_logs.arn}/${local.log_prefix}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
+    ]
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "alb_log_encryption_config" {
@@ -94,8 +112,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "alb_log_encryptio
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.alb_key.id
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -103,4 +120,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "alb_log_encryptio
 resource "aws_s3_bucket_acl" "bucket_acl" {
   bucket = aws_s3_bucket.alb_access_logs.id
   acl    = "private"
+}
+
+resource "aws_s3_bucket_policy" "access_logs" {
+  bucket = aws_s3_bucket.alb_access_logs.id
+  policy = data.aws_iam_policy_document.allow_load_balancer_write.json
 }
