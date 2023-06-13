@@ -117,11 +117,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "alb_log_encryptio
   }
 }
 
-resource "aws_s3_bucket_acl" "bucket_acl" {
-  bucket = aws_s3_bucket.alb_access_logs.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_policy" "access_logs" {
   bucket = aws_s3_bucket.alb_access_logs.id
   policy = data.aws_iam_policy_document.allow_load_balancer_write.json
