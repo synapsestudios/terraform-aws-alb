@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "allow_load_balancer_write" {
   statement {
     principals {
       type        = "AWS"
-      identifiers = ["${data.aws_elb_service_account.main.arn}"]
+      identifiers = [data.aws_elb_service_account.main.arn]
     }
 
     actions = [
